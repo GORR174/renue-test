@@ -27,10 +27,10 @@ public class AirportDAO {
         return airports;
     }
 
-    public List<Airport> getAirportsByFieldValue(int row, String prefix) {
+    public List<Airport> getAirportsByFieldValue(int column, String prefix) {
         return airports.stream()
-                .filter(airport -> airport.getAirportField(row).startsWith(prefix))
-                .sorted(Comparator.comparing(a -> a.getAirportField(row)))
+                .filter(airport -> airport.getAirportField(column).startsWith(prefix))
+                .sorted(Comparator.comparing(a -> a.getAirportField(column)))
                 .collect(Collectors.toList());
     }
 }

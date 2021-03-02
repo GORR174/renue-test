@@ -14,7 +14,7 @@ public class AirportController {
         this.airportDAO = airportDAO;
     }
 
-    public List<Airport> findAirportsByFieldValue(int row, String prefix) {
-        return airportDAO.getAirportsByFieldValue(row, prefix);
+    public List<Airport> findAirportsByFieldValue(int column, String prefix) {
+        return airportDAO.getAirportsByFieldValue(column, prefix);
     }
 }
