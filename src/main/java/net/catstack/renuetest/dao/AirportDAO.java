@@ -1,36 +1,45 @@
 package net.catstack.renuetest.dao;
 
 import net.catstack.renuetest.models.Airport;
+import net.catstack.renuetest.parsers.AirportsParser;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class AirportDAO {
-    private List<Airport> airports;
+    private LinkedList<Airport> airports = new LinkedList<>();
 
-    public AirportDAO() {
-        loadFromFile();
-    }
-
-    public void loadFromFile() {
-        airports = List.of(
-                new Airport(new String[] {"1", "Test1-1", "Test2-1"}),
-                new Airport(new String[] {"2", "Test1-2", "Test2-2"}),
-                new Airport(new String[] {"3", "Tast1-3", "Test2-3"}),
-                new Airport(new String[] {"4", "Aast1-4", "Test2-4"})
-        );
-    }
+    @Value("${app.airportsData.path}")
+    private String dataFilePath;
+    @Value("${app.airportsData.csvSeparator}")
+    private String dataSeparator;
 
     public List<Airport> getAirports() {
         return airports;
     }
 
     public List<Airport> getAirportsByFieldValue(int column, String prefix) {
-        return airports.stream()
-                .filter(airport -> airport.getAirportField(column).startsWith(prefix))
-                .sorted(Comparator.comparing(a -> a.getAirportField(column)))
-                .collect(Collectors.toList());
+        try {
+            AirportsParser parser = new AirportsParser(dataSeparator);
+
+            return parser.getAirportsFromFile(new ClassPathResource(dataFilePath).getFile().getPath())
+                    .filter(airport -> airport.getAirportField(column).startsWith(prefix))
+                    .sorted(Comparator.comparing(a -> a.getAirportField(column)))
+                    .collect(Collectors.toList());
+        } catch (FileNotFoundException e) {
+            System.out.println("Ошибка: файл " + dataFilePath + " не найден");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

@@ -32,7 +32,7 @@ public class RenuetestApplication implements CommandLineRunner {
         System.out.println(column);
 
         try {
-            System.out.println(airportController.findAirportsByFieldValue(column, "T"));
+            System.out.println(airportController.findAirportsByFieldValue(column, "Bo"));
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Ошибка: Указанной колонки (" + column + ") не существует");
         }

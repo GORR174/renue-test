@@ -1,2 +1,5 @@
 app:
   column: 1
+  airportsData:
+    path: "data/airports.dat"
+    csvSeparator: ","
