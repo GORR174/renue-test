@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.util.StopWatch;
+
+import java.util.Scanner;
 
 @SpringBootApplication
 public class RenuetestApplication implements CommandLineRunner {
@@ -29,10 +32,26 @@ public class RenuetestApplication implements CommandLineRunner {
                 System.out.println("Неверный формат ввода параметра колонки. Используется стандартный параметр: " + column);
             }
         }
-        System.out.println(column);
+
+        System.out.print("Введите строку: ");
+
+        Scanner scanner = new Scanner(System.in);
+        var prefix = scanner.nextLine();
+
+        if (prefix.isBlank()) {
+            System.out.println("Ошибка: вы ввели пустую строку");
+            return;
+        }
 
         try {
-            System.out.println(airportController.findAirportsByFieldValue(column, "Bo"));
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+            var airports = airportController.findAirportsByFieldValue(column, prefix);
+            stopWatch.stop();
+
+            airports.forEach(System.out::println);
+            System.out.println("\nКоличество найденных строк: " + airports.size());
+            System.out.println("Время, затраченное на поиск: " + stopWatch.getLastTaskTimeMillis() + "мс.");
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Ошибка: Указанной колонки (" + column + ") не существует");
         }
